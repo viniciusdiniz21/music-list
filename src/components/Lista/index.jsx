@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { colors } from "../../themes";
-import { AiOutlineStar } from "react-icons/ai";
-import { AiFillStar } from "react-icons/ai";
-import { CiPlay1 } from "react-icons/ci";
+import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+import { useSelector, useDispatch } from "react-redux";
+import { removeItem, addItem } from "../../store/favoritos";
+import Play from "./Play";
 
 const TableRow = styled.tr`
   text-align: left;
@@ -53,6 +54,32 @@ const AvatarPic = styled.img`
 const icon = { fontSize: "1.4rem", cursor: "pointer" };
 
 function index({ list }) {
+  const favoritos = useSelector((state) => state.favoritos);
+
+  const dispatch = useDispatch();
+
+  function addFav(id) {
+    dispatch(addItem(id));
+  }
+  function removeFromFav(id) {
+    dispatch(removeItem(id));
+  }
+
+  let isFav;
+  const musicas = list.map((musica) => {
+    const fav = favoritos.find((el) => el.id == musica.id);
+    if (fav != undefined) isFav = true;
+    else isFav = false;
+    return {
+      id: musica.id,
+      titulo: musica.title,
+      album: musica.album.title,
+      foto: musica.album.cover,
+      audio: musica.preview,
+      fav: isFav,
+    };
+  });
+
   return (
     <Table>
       <TableHead>
@@ -64,18 +91,27 @@ function index({ list }) {
         </TableRow>
       </TableHead>
       <TableBody>
-        {list.map((musica) => {
-          console.log(musica);
+        {musicas.map((musica) => {
+          let audio = new Audio(`${musica.audio}`);
+
+          const start = () => {
+            audio.play();
+          };
+
+          const pause = () => {
+            audio.pause();
+          };
+
           return (
-            <TableRow>
+            <TableRow key={musica.id}>
               <TableCell>
-                <AvatarPic src={musica.album.cover} />
+                <AvatarPic src={musica.foto} />
               </TableCell>
               <TableCell>
-                <p>{musica.title}</p>
+                <p>{musica.titulo}</p>
               </TableCell>
               <TableCell>
-                <p>{musica.album.title}</p>
+                <p>{musica.album}</p>
               </TableCell>
               <TableCell>
                 <div
@@ -85,9 +121,22 @@ function index({ list }) {
                     justifyContent: "space-around",
                   }}
                 >
-                  <CiPlay1 style={icon} />
-
-                  <AiOutlineStar style={icon} />
+                  <Play start={start} pause={pause} icon={icon} />
+                  {musica.fav ? (
+                    <AiFillStar
+                      style={{ ...icon, color: colors.warning }}
+                      onClick={() => {
+                        removeFromFav(musica.id);
+                      }}
+                    />
+                  ) : (
+                    <AiOutlineStar
+                      style={icon}
+                      onClick={() => {
+                        addFav(musica);
+                      }}
+                    />
+                  )}
                 </div>
               </TableCell>
             </TableRow>

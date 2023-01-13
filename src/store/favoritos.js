@@ -1,4 +1,4 @@
-/* import { createAction, createReducer } from "@reduxjs/toolkit";
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
 const INITIAL_STATE = [];
 
@@ -10,4 +10,3 @@ export default createReducer(INITIAL_STATE, {
   [removeItem.type]: (state, action) =>
     state.filter((item) => item.id !== action.payload),
 });
- */
