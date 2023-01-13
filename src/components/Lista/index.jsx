@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { colors } from "../../themes";
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+import { FaDeezer } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, addItem } from "../../store/favoritos";
 import Play from "./Play";
@@ -34,7 +35,7 @@ const Table = styled.table`
   overflow: hidden;
   border-collapse: collapse;
   border: 3px solid red;
-  border-radius: 8px;
+  border-radius: 15px;
 `;
 
 const TableCell = styled.td`
@@ -77,6 +78,7 @@ function index({ list }) {
       foto: musica.album.cover,
       audio: musica.preview,
       fav: isFav,
+      link: musica.link,
     };
   });
 
@@ -121,6 +123,18 @@ function index({ list }) {
                     justifyContent: "space-around",
                   }}
                 >
+                  <a
+                    style={{
+                      textDecoration: "none",
+                      color: "white",
+                      marginTop: "7px",
+                      marginRight: "5px",
+                    }}
+                    href={musica.link}
+                    target="_blank"
+                  >
+                    <FaDeezer style={icon} />
+                  </a>
                   <Play start={start} pause={pause} icon={icon} />
                   {musica.fav ? (
                     <AiFillStar
@@ -131,7 +145,7 @@ function index({ list }) {
                     />
                   ) : (
                     <AiOutlineStar
-                      style={icon}
+                      style={{ ...icon, color: colors.warning }}
                       onClick={() => {
                         addFav(musica);
                       }}

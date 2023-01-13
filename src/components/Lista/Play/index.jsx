@@ -7,7 +7,7 @@ function index({ start, pause, icon }) {
     <>
       {playing ? (
         <ImPause2
-          style={icon}
+          style={{ ...icon, color: "#00000" }}
           onClick={() => {
             setPlaying(false);
             pause();
@@ -15,7 +15,7 @@ function index({ start, pause, icon }) {
         ></ImPause2>
       ) : (
         <ImPlay3
-          style={icon}
+          style={{ ...icon, color: "#00000" }}
           onClick={() => {
             setPlaying(true);
             start();
