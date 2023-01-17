@@ -39,9 +39,8 @@ const tp = {
   overflow: "hidden",
 };
 
-function index({ list }) {
+function index({ list, currentItem, setCurrentItem, limit }) {
   const favoritos = useSelector((state) => state.favoritos);
-
   const dispatch = useDispatch();
 
   function addFav(id) {
@@ -69,7 +68,15 @@ function index({ list }) {
     };
   });
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    const intersectionObserver = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        setCurrentItem((currentItem) => currentItem + limit);
+      }
+    });
+    intersectionObserver.observe(document.querySelector("#sentinela"));
+    return () => intersectionObserver.disconnect();
+  }, []);
 
   return (
     <TableContainer sx={{ minWidth: 500 }} component={Box}>
@@ -172,7 +179,7 @@ function index({ list }) {
               </TableRow>
             );
           })}
-          {/* <div id="final" /> */}
+          <TableRow id="sentinela" />
         </TableBody>
       </Table>
     </TableContainer>

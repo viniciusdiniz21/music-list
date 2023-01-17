@@ -6,15 +6,17 @@ import DrawerAppBar from "../Header";
 
 function index() {
   const [musics, setMusics] = useState([]);
+  const [currentItem, setCurrentItem] = React.useState(0);
+  const limit = 10;
 
   useEffect(() => {
     getMusics();
-  }, []);
+  }, [currentItem]);
 
   function getMusics() {
     const options = {
       method: "GET",
-      url: "https://deezerdevs-deezer.p.rapidapi.com/playlist/1001939451&index=0&limit=10", //aplicar paginação com scroll infinito
+      url: `https://deezerdevs-deezer.p.rapidapi.com/playlist/1001939451?index=${currentItem}&limit=${limit}`, //aplicar paginação com scroll infinito
       headers: {
         "X-RapidAPI-Key": "6d2c80091bmshb6d36c4fb8994f1p1e7544jsne12fc89f71d2",
         "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
@@ -22,8 +24,10 @@ function index() {
     };
     axios
       .request(options)
-      .then((response) => {
-        setMusics(response.data.tracks.data);
+      .then((response) => response.data.tracks.data)
+      .then((newMusics) => {
+        console.log(newMusics);
+        return setMusics((prevMusics) => [...prevMusics, ...newMusics]);
       })
       .catch((error) => {
         console.error(error);
@@ -32,7 +36,14 @@ function index() {
 
   return (
     <DrawerAppBar>
-      <Lista list={musics} />;
+      {/*Resolver problema da primeira busca duplicada*/}
+      <Lista
+        list={musics}
+        currentItem={currentItem}
+        setCurrentItem={setCurrentItem}
+        limit={limit}
+      />
+      ;
     </DrawerAppBar>
   );
 }
