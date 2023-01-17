@@ -1,27 +1,37 @@
 import React, { useState } from "react";
-import { ImPlay3, ImPause2 } from "react-icons/im";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
+import { Tooltip } from "@mui/material";
+
+function TooltipParent({ children }) {
+  return <Tooltip title="Prévia">{children}</Tooltip>;
+}
 
 function index({ start, pause, icon }) {
   const [playing, setPlaying] = useState(false);
   return (
     <>
       {playing ? (
-        <ImPause2
-          style={{ ...icon, color: "#00000" }}
-          onClick={() => {
-            setPlaying(false);
-            pause();
-          }}
-        ></ImPause2>
+        <TooltipParent>
+          <PauseIcon
+            style={{ ...icon, color: "#00000" }}
+            onClick={() => {
+              setPlaying(false);
+              pause();
+            }}
+          ></PauseIcon>
+        </TooltipParent>
       ) : (
-        <ImPlay3
-          style={{ ...icon, color: "#00000" }}
-          onClick={() => {
-            setPlaying(true);
-            start();
-            setTimeout(() => pause(), 29000);
-          }}
-        ></ImPlay3>
+        <TooltipParent>
+          <PlayArrowIcon
+            style={{ ...icon, color: "#00000" }}
+            onClick={() => {
+              setPlaying(true);
+              start();
+              setTimeout(() => pause(), 29000);
+            }}
+          ></PlayArrowIcon>
+        </TooltipParent>
       )}
     </>
   );
