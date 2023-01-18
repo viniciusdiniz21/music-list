@@ -1,37 +1,74 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Lista from "../Lista";
 
+import DrawerAppBar from "../Header";
+import api from "../../services/api";
+import { MusicsContext } from "../../contexts/MusicsContext";
+import { SearchContext } from "../../contexts/SearchContext";
+
 function index() {
-  const [musics, setMusics] = useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  const { music, setMusic, currentItem, setCurrentItem } =
+    React.useContext(MusicsContext);
+  const { search, setSearch, isSearched, setIsSearched } =
+    React.useContext(SearchContext);
+
+  const limit = 10;
 
   useEffect(() => {
-    getMusics();
-  }, []);
+    setLoading(true);
+    setCurrentItem(0);
+    setMusic([]);
+  }, [isSearched]);
 
-  function getMusics() {
-    const options = {
-      method: "GET",
-      url: "https://deezerdevs-deezer.p.rapidapi.com/playlist/1001939451",
-      headers: {
-        "X-RapidAPI-Key": "6d2c80091bmshb6d36c4fb8994f1p1e7544jsne12fc89f71d2",
-        "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
-      },
-    };
-    axios
-      .request(options)
-      .then((response) => {
-        setMusics(response.data.tracks.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  useEffect(() => {
+    isSearched ? getSearchMusics() : getMusics();
+  }, [currentItem, isSearched]);
+
+  //USE EFFECT PARA RESETAR CURRENT ITEM E MUSIC QUANDO ALTERAR PARA SEARCHED
+
+  async function getMusics() {
+    setIsSearched(false);
+    try {
+      const response = await api.get(
+        `playlist/1001939451?index=${currentItem}&limit=${limit}`
+      );
+      let newMusics = response.data.tracks.data;
+      setMusic((prevMusics) => [...prevMusics, ...newMusics]);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+  async function getSearchMusics() {
+    try {
+      const response = await api.get(
+        `search?q=${search}&index=${currentItem}&limit=${limit}`
+      );
+      let newMusics = response.data.data;
+      setMusic((prevMusics) => [...prevMusics, ...newMusics]);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   }
 
   return (
-    <div>
-      <Lista list={musics} />;
-    </div>
+    <DrawerAppBar>
+      {/*Resolver problema da primeira busca duplicada*/}
+      {loading ? (
+        <h4 style={{ color: "white", fontWheight: 500 }}>Carregando . . .</h4>
+      ) : (
+        <Lista
+          list={music}
+          currentItem={currentItem}
+          setCurrentItem={setCurrentItem}
+          limit={limit}
+          search={search}
+        />
+      )}
+    </DrawerAppBar>
   );
 }
 
