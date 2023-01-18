@@ -99,9 +99,7 @@ function index() {
                         ></a>
                       </MusicNoteIcon>
                     </Tooltip>
-                    <Tooltip title="Prévia">
-                      <Play start={start} pause={pause} icon={icon} />
-                    </Tooltip>
+                    <Play icon={icon} id={musica.id} audioUrl={musica.audio} />
                     <Tooltip title="Remover">
                       <DeleteIcon
                         style={{ ...icon, color: pink[600] }}
