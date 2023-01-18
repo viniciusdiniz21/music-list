@@ -110,6 +110,7 @@ function DrawerAppBar({ window, children }) {
             Fake-Deezer
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+            {location.pathname != "/favoritos" && <SearchBar />}
             <Link to="/" reloadDocument>
               <Button
                 color="secondary"
@@ -151,8 +152,8 @@ function DrawerAppBar({ window, children }) {
           }}
         >
           {drawer}
-          {location.pathname != "/favoritos" && <SearchBar />}
         </Drawer>
+        {location.pathname != "/favoritos" && <SearchBar />}
       </Box>
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
