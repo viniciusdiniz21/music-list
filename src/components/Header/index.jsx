@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { ListItemIcon } from "@mui/material";
 import SearchBar from "./SearchBar";
 import { pink } from "@mui/material/colors";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -52,12 +53,7 @@ function DrawerAppBar({ window, children }) {
         <ListItem disablePadding>
           {location.pathname != "/favoritos" && <SearchBar />}
         </ListItem>
-        <ListItem
-          onClick={() => {
-            navigate("../");
-          }}
-          disablePadding
-        >
+        <ListItem disablePadding>
           <ListItemButton sx={{ textAlign: "center" }}>
             <ListItemIcon>
               <MusicNoteIcon />
@@ -113,28 +109,26 @@ function DrawerAppBar({ window, children }) {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "flex" } }}>
             {location.pathname != "/favoritos" && <SearchBar />}
-            <Button
-              onClick={() => {
-                navigate("../");
-              }}
-              color="secondary"
-              startIcon={<MusicNoteIcon />}
-              sx={buttonStyle}
-            >
-              Descubra
-            </Button>
-            <Badge badgeContent={qtdFav} color="secondary">
+            <Link to="/" reloadDocument>
               <Button
-                onClick={() => {
-                  navigate("/favoritos");
-                }}
                 color="secondary"
-                startIcon={<FavoriteIcon />}
+                startIcon={<MusicNoteIcon />}
                 sx={buttonStyle}
               >
-                Favoritos
+                Descubra
               </Button>
-            </Badge>
+            </Link>
+            <Link to="/favoritos" reloadDocument>
+              <Badge badgeContent={qtdFav} color="secondary">
+                <Button
+                  color="secondary"
+                  startIcon={<FavoriteIcon />}
+                  sx={buttonStyle}
+                >
+                  Favoritos
+                </Button>
+              </Badge>
+            </Link>
           </Box>
         </Toolbar>
       </AppBar>
