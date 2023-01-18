@@ -50,15 +50,13 @@ function DrawerAppBar({ window, children }) {
       </Typography>
       <Divider />
       <List>
+        {location.pathname != "/favoritos" && <SearchBar />}
         <ListItem
           disablePadding
           onClick={() => {
-            navigate("/");
+            navigate("../");
           }}
         >
-          {location.pathname != "/favoritos" && <SearchBar />}
-        </ListItem>
-        <ListItem disablePadding>
           <ListItemButton sx={{ textAlign: "center" }}>
             <ListItemIcon>
               <MusicNoteIcon />
