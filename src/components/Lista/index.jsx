@@ -79,7 +79,7 @@ function index({ list, currentItem, setCurrentItem, limit }) {
   }, []);
 
   return (
-    <TableContainer sx={{ width: 1000 }} component={Box}>
+    <TableContainer sx={{ width: "80vw" }} component={Box}>
       <Table
         sx={{
           width: "100%",

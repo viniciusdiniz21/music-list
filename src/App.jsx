@@ -9,6 +9,8 @@ import router from "./routes";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { ThemeOptions } from "./themes";
+import { MusicStorage } from "./contexts/MusicsContext";
+import { SearchStorage } from "./contexts/SearchContext";
 
 const theme = createTheme(ThemeOptions);
 
@@ -17,10 +19,14 @@ function App() {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <PersistGate loading={null} persistor={persistor}>
-          <RouterProvider router={router}>
-            <CssBaseline />
-            <Main />
-          </RouterProvider>
+          <MusicStorage>
+            <SearchStorage>
+              <RouterProvider router={router}>
+                <CssBaseline />
+                <Main />
+              </RouterProvider>
+            </SearchStorage>
+          </MusicStorage>
         </PersistGate>
       </ThemeProvider>
     </Provider>

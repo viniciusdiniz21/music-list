@@ -3,11 +3,14 @@ import Lista from "../Lista";
 
 import DrawerAppBar from "../Header";
 import api from "../../services/api";
+import { MusicsContext } from "../../contexts/MusicsContext";
+import { SearchContext } from "../../contexts/SearchContext";
 
 function index() {
-  const [musics, setMusics] = useState([]);
   const [currentItem, setCurrentItem] = React.useState(0);
-  const [loading, setLoading] = React.useState(false);
+
+  const { music, setMusic } = React.useContext(MusicsContext);
+  const { search, setSearch } = React.useContext(SearchContext);
 
   const limit = 10;
 
@@ -15,29 +18,46 @@ function index() {
     getMusics();
   }, [currentItem]);
 
+  //USE EFFECT PARA RESETAR CURRENT ITEM E MUSIC QUANDO ALTERAR PARA SEARCHED
+
+  async function handleSearchMusics() {
+    setCurrentItem(0);
+    setMusic([]);
+    try {
+      const response = await api.get(
+        `search/${search}?index=${currentItem}&limit=${limit}`
+      );
+      setMusic(response.data.tracks.data);
+    } catch (error) {}
+  }
+
   async function getMusics() {
-    setLoading(true);
     try {
       const response = await api.get(
         `playlist/1001939451?index=${currentItem}&limit=${limit}`
       );
       let newMusics = response.data.tracks.data;
-      setMusics((prevMusics) => [...prevMusics, ...newMusics]);
-    } catch (error) {
-      setLoading(false);
-    }
-    setLoading(false);
+      setMusic((prevMusics) => [...prevMusics, ...newMusics]);
+    } catch (error) {}
+  }
+  async function getSearchMusics() {
+    try {
+      const response = await api.get(
+        `search/${search}?index=${currentItem}&limit=${limit}`
+      );
+      let newMusics = response.data.tracks.data;
+      setMusic((prevMusics) => [...prevMusics, ...newMusics]);
+    } catch (error) {}
   }
 
   return (
     <DrawerAppBar>
       {/*Resolver problema da primeira busca duplicada*/}
       <Lista
-        list={musics}
+        list={music}
         currentItem={currentItem}
         setCurrentItem={setCurrentItem}
         limit={limit}
-        loading={loading}
       />
     </DrawerAppBar>
   );

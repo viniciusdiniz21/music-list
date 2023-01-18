@@ -1,5 +1,4 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -16,13 +15,23 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Badge from "@mui/material/Badge";
-import { useNavigate } from "react-router-dom";
-import favoritos from "../../store/favoritos";
+import { useLocation, useNavigate } from "react-router-dom";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useSelector } from "react-redux";
+import { ListItemIcon } from "@mui/material";
+import SearchBar from "./SearchBar";
 
 const drawerWidth = 240;
 
 function DrawerAppBar({ window, children }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const favoritos = useSelector((state) => state.favoritos);
+
+  const location = useLocation();
+
+  let qtdFav = favoritos.length;
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -37,6 +46,9 @@ function DrawerAppBar({ window, children }) {
       </Typography>
       <Divider />
       <List>
+        <ListItem disablePadding>
+          {location.pathname != "/favoritos" && <SearchBar />}
+        </ListItem>
         <ListItem
           onClick={() => {
             navigate("../");
@@ -44,6 +56,9 @@ function DrawerAppBar({ window, children }) {
           disablePadding
         >
           <ListItemButton sx={{ textAlign: "center" }}>
+            <ListItemIcon>
+              <MusicNoteIcon />
+            </ListItemIcon>
             <ListItemText primary={"Descubra"} />
           </ListItemButton>
         </ListItem>
@@ -54,6 +69,9 @@ function DrawerAppBar({ window, children }) {
           disablePadding
         >
           <ListItemButton sx={{ textAlign: "center" }}>
+            <ListItemIcon>
+              <FavoriteIcon />
+            </ListItemIcon>
             <ListItemText primary={"Favoritos"} />
           </ListItemButton>
         </ListItem>
@@ -90,20 +108,25 @@ function DrawerAppBar({ window, children }) {
           >
             Fake-Deezer
           </Typography>
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+            {location.pathname != "/favoritos" && <SearchBar />}
             <Button
               onClick={() => {
                 navigate("../");
               }}
+              color="secondary"
+              startIcon={<MusicNoteIcon />}
               sx={{ color: "#fff" }}
             >
               Descubra
             </Button>
-            <Badge badgeContent={favoritos.length} color="secondary">
+            <Badge badgeContent={qtdFav} color="secondary">
               <Button
                 onClick={() => {
                   navigate("/favoritos");
                 }}
+                color="secondary"
+                startIcon={<FavoriteIcon />}
                 sx={{ color: "#fff" }}
               >
                 Favoritos
@@ -134,7 +157,12 @@ function DrawerAppBar({ window, children }) {
       </Box>
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
-        <Container maxWidth="lg">{children}</Container>
+        <Container
+          maxWidth="lg"
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          {children}
+        </Container>
       </Box>
     </Box>
   );
