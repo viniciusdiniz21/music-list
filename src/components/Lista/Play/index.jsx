@@ -31,7 +31,7 @@ function index({ icon, id, audioUrl }) {
     setCurrentPlay(id);
     setPlaying(true);
     start();
-    setTimeout(() => pause(), 29000);
+    setTimeout(() => stop(), 20000);
   }
 
   function stop() {
