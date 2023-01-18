@@ -9,8 +9,14 @@ import { SearchContext } from "../../contexts/SearchContext";
 function index() {
   const [loading, setLoading] = React.useState(true);
 
-  const { music, setMusic, currentItem, setCurrentItem } =
-    React.useContext(MusicsContext);
+  const {
+    music,
+    setMusic,
+    currentItem,
+    setCurrentItem,
+    currentPlay,
+    setCurrentPlay,
+  } = React.useContext(MusicsContext);
   const { search, setSearch, isSearched, setIsSearched } =
     React.useContext(SearchContext);
 
@@ -62,6 +68,8 @@ function index() {
       ) : (
         <Lista
           list={music}
+          currentPlay={currentPlay}
+          setCurrentPlay={setCurrentPlay}
           currentItem={currentItem}
           setCurrentItem={setCurrentItem}
           limit={limit}

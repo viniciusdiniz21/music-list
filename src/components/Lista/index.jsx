@@ -106,13 +106,7 @@ function index({ list, currentItem, setCurrentItem, limit, search }) {
               {musicas.map((musica) => {
                 let audio = new Audio(`${musica.audio}`);
 
-                const start = () => {
-                  audio.play();
-                };
-
-                const pause = () => {
-                  audio.pause();
-                };
+                audio.load();
 
                 let minutoDuracao = Math.trunc(musica.duracao / 60);
                 let segundoDuracao = musica.duracao % 60;
@@ -137,7 +131,8 @@ function index({ list, currentItem, setCurrentItem, limit, search }) {
                         ></a>
                       </MusicNoteIcon>
                     </Tooltip>
-                    <Play start={start} pause={pause} icon={icon} />
+
+                    <Play icon={icon} id={musica.id} audioUrl={musica.audio} />
 
                     <Tooltip title="Favoritar">
                       {musica.fav ? (
