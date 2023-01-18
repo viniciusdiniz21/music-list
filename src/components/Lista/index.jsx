@@ -79,7 +79,7 @@ function index({ list, currentItem, setCurrentItem, limit }) {
   }, []);
 
   return (
-    <TableContainer sx={{ minWidth: 500 }} component={Box}>
+    <TableContainer sx={{ width: 1000 }} component={Box}>
       <Table
         sx={{
           width: "100%",
@@ -179,7 +179,10 @@ function index({ list, currentItem, setCurrentItem, limit }) {
               </TableRow>
             );
           })}
-          <TableRow id="sentinela" />
+          <TableRow
+            sx={{ backgroundColor: "green", height: "10px" }}
+            id="sentinela"
+          ></TableRow>
         </TableBody>
       </Table>
     </TableContainer>

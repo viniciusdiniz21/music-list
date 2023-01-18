@@ -1,37 +1,32 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Lista from "../Lista";
-import Container from "@mui/material/Container";
+
 import DrawerAppBar from "../Header";
+import api from "../../services/api";
 
 function index() {
   const [musics, setMusics] = useState([]);
   const [currentItem, setCurrentItem] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+
   const limit = 10;
 
   useEffect(() => {
     getMusics();
   }, [currentItem]);
 
-  function getMusics() {
-    const options = {
-      method: "GET",
-      url: `https://deezerdevs-deezer.p.rapidapi.com/playlist/1001939451?index=${currentItem}&limit=${limit}`, //aplicar paginação com scroll infinito
-      headers: {
-        "X-RapidAPI-Key": "6d2c80091bmshb6d36c4fb8994f1p1e7544jsne12fc89f71d2",
-        "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
-      },
-    };
-    axios
-      .request(options)
-      .then((response) => response.data.tracks.data)
-      .then((newMusics) => {
-        console.log(newMusics);
-        return setMusics((prevMusics) => [...prevMusics, ...newMusics]);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  async function getMusics() {
+    setLoading(true);
+    try {
+      const response = await api.get(
+        `playlist/1001939451?index=${currentItem}&limit=${limit}`
+      );
+      let newMusics = response.data.tracks.data;
+      setMusics((prevMusics) => [...prevMusics, ...newMusics]);
+    } catch (error) {
+      setLoading(false);
+    }
+    setLoading(false);
   }
 
   return (
@@ -42,8 +37,8 @@ function index() {
         currentItem={currentItem}
         setCurrentItem={setCurrentItem}
         limit={limit}
+        loading={loading}
       />
-      ;
     </DrawerAppBar>
   );
 }
