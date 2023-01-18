@@ -50,7 +50,6 @@ function DrawerAppBar({ window, children }) {
       </Typography>
       <Divider />
       <List>
-        {location.pathname != "/favoritos" && <SearchBar />}
         <ListItem
           disablePadding
           onClick={() => {
@@ -111,7 +110,6 @@ function DrawerAppBar({ window, children }) {
             Fake-Deezer
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "flex" } }}>
-            {location.pathname != "/favoritos" && <SearchBar />}
             <Link to="/" reloadDocument>
               <Button
                 color="secondary"
@@ -153,6 +151,7 @@ function DrawerAppBar({ window, children }) {
           }}
         >
           {drawer}
+          {location.pathname != "/favoritos" && <SearchBar />}
         </Drawer>
       </Box>
       <Box component="main" sx={{ p: 3 }}>
