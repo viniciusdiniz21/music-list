@@ -152,8 +152,8 @@ function DrawerAppBar({ window, children }) {
           }}
         >
           {drawer}
+          {location.pathname != "/favoritos" && <SearchBar />}
         </Drawer>
-        {location.pathname != "/favoritos" && <SearchBar />}
       </Box>
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
