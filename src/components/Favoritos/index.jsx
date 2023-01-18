@@ -12,10 +12,11 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Tooltip from "@mui/material/Tooltip";
 import { useSelector, useDispatch } from "react-redux";
+import { tablestyles } from "../../themes";
 import { removeItem } from "../../store/favoritos";
 import Play from "../Lista/Play";
 import { pink } from "@mui/material/colors";
-import { Typography } from "@mui/material";
+import Empty from "../Empty";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,16 +50,9 @@ function index() {
   }
 
   return (
-    <TableContainer sx={{ width: "75vw" }} component={Box}>
+    <TableContainer sx={tablestyles} component={Box}>
       {favoritos.length > 0 ? (
-        <Table
-          sx={{
-            width: "100%",
-            overflow: "hidden",
-            borderCollapse: "collapse",
-            borderRadius: "15px",
-          }}
-        >
+        <Table>
           <TableHead>
             <TableRow>
               <StyledTableCell></StyledTableCell>
@@ -147,11 +141,7 @@ function index() {
           </TableBody>
         </Table>
       ) : (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Typography variant="h4" sx={{ fontWeight: 500, color: "white" }}>
-            Não tem nada aqui... Adicione músicas na aba 'Descubra'!
-          </Typography>
-        </Box>
+        <Empty>Não tem nada aqui... Adicione músicas na aba 'Descubra'!</Empty>
       )}
     </TableContainer>
   );

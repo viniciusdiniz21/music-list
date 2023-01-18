@@ -21,8 +21,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useSelector } from "react-redux";
 import { ListItemIcon } from "@mui/material";
 import SearchBar from "./SearchBar";
+import { pink } from "@mui/material/colors";
 
 const drawerWidth = 240;
+
+const buttonStyle = { color: "#fff", [`&:hover`]: { color: pink[500] } };
 
 function DrawerAppBar({ window, children }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -116,7 +119,7 @@ function DrawerAppBar({ window, children }) {
               }}
               color="secondary"
               startIcon={<MusicNoteIcon />}
-              sx={{ color: "#fff" }}
+              sx={buttonStyle}
             >
               Descubra
             </Button>
@@ -127,7 +130,7 @@ function DrawerAppBar({ window, children }) {
                 }}
                 color="secondary"
                 startIcon={<FavoriteIcon />}
-                sx={{ color: "#fff" }}
+                sx={buttonStyle}
               >
                 Favoritos
               </Button>

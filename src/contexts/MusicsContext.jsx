@@ -3,11 +3,14 @@ export const MusicsContext = React.createContext();
 
 export const MusicStorage = ({ children }) => {
   const [music, setMusic] = React.useState([]);
+  const [currentItem, setCurrentItem] = React.useState(0);
   return (
     <MusicsContext.Provider
       value={{
         music,
         setMusic,
+        currentItem,
+        setCurrentItem,
       }}
     >
       {children}

@@ -16,6 +16,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { removeItem, addItem } from "../../store/favoritos";
 import Play from "./Play";
 import { pink } from "@mui/material/colors";
+import { tablestyles } from "../../themes";
+import Empty from "../Empty";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,7 +41,7 @@ const tp = {
   overflow: "hidden",
 };
 
-function index({ list, currentItem, setCurrentItem, limit }) {
+function index({ list, currentItem, setCurrentItem, limit, search }) {
   const favoritos = useSelector((state) => state.favoritos);
   const dispatch = useDispatch();
 
@@ -50,8 +52,13 @@ function index({ list, currentItem, setCurrentItem, limit }) {
     dispatch(removeItem(id));
   }
 
+  const uniqueList = list
+    .map((e) => JSON.stringify(e))
+    .reduce((acc, cur) => (acc.includes(cur) || acc.push(cur), acc), [])
+    .map((e) => JSON.parse(e));
+
   let isFav;
-  const musicas = list.map((musica) => {
+  const musicas = uniqueList.map((musica) => {
     const fav = favoritos.find((el) => el.id == musica.id);
     if (fav != undefined) isFav = true;
     else isFav = false;
@@ -69,123 +76,126 @@ function index({ list, currentItem, setCurrentItem, limit }) {
   });
 
   React.useEffect(() => {
-    const intersectionObserver = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        setCurrentItem((currentItem) => currentItem + limit);
-      }
-    });
-    intersectionObserver.observe(document.querySelector("#sentinela"));
-    return () => intersectionObserver.disconnect();
+    if (musicas.length > 0) {
+      const intersectionObserver = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setCurrentItem((currentItem) => currentItem + limit);
+        }
+      });
+      intersectionObserver.observe(document.querySelector("#sentinela"));
+      return () => intersectionObserver.disconnect();
+    }
   }, []);
 
   return (
-    <TableContainer sx={{ width: "80vw" }} component={Box}>
-      <Table
-        sx={{
-          width: "100%",
-          overflow: "hidden",
-          borderCollapse: "collapse",
-          borderRadius: "15px",
-        }}
-      >
-        <TableHead>
-          <TableRow>
-            <StyledTableCell></StyledTableCell>
-            <StyledTableCell>NOME</StyledTableCell>
-            <StyledTableCell>ALBÚM</StyledTableCell>
-            <StyledTableCell>CANTOR</StyledTableCell>
-            <StyledTableCell>DURAÇÃO</StyledTableCell>
-            <StyledTableCell></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {musicas.map((musica) => {
-            let audio = new Audio(`${musica.audio}`);
-
-            const start = () => {
-              audio.play();
-            };
-
-            const pause = () => {
-              audio.pause();
-            };
-
-            let minutoDuracao = Math.trunc(musica.duracao / 60);
-            let segundoDuracao = musica.duracao % 60;
-
-            const icons = (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-around",
-                }}
-              >
-                <Tooltip title="Música completa">
-                  <MusicNoteIcon sx={icon}>
-                    <a
-                      style={{
-                        textDecoration: "none",
-                        color: "white",
-                      }}
-                      href={musica.link}
-                      target="_blank"
-                    ></a>
-                  </MusicNoteIcon>
-                </Tooltip>
-                <Play start={start} pause={pause} icon={icon} />
-
-                <Tooltip title="Favoritar">
-                  {musica.fav ? (
-                    <FavoriteIcon
-                      style={{ ...icon, color: pink[600] }}
-                      onClick={() => {
-                        removeFromFav(musica.id);
-                      }}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon
-                      style={{ ...icon, color: pink[600] }}
-                      onClick={() => {
-                        addFav(musica);
-                      }}
-                    />
-                  )}
-                </Tooltip>
-              </div>
-            );
-            return (
-              <TableRow
-                key={musica.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <StyledTableCell>
-                  <Tooltip title={musica.titulo}>
-                    <Avatar src={musica.foto} variant="rounded" />
-                  </Tooltip>
-                </StyledTableCell>
-                <StyledTableCell sx={td}>
-                  <p style={tp}>{musica.titulo}</p>
-                </StyledTableCell>
-                <StyledTableCell>{musica.autor}</StyledTableCell>
-                <StyledTableCell sx={td}>
-                  <p style={tp}>{musica.titulo}</p>
-                </StyledTableCell>
-                <StyledTableCell>
-                  {minutoDuracao}:
-                  {segundoDuracao < 10 ? "0" + segundoDuracao : segundoDuracao}
-                </StyledTableCell>
-                <StyledTableCell>{icons}</StyledTableCell>
+    <>
+      {musicas.length > 0 ? (
+        <TableContainer sx={tablestyles} component={Box}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell>NOME</StyledTableCell>
+                <StyledTableCell>ALBÚM</StyledTableCell>
+                <StyledTableCell>CANTOR</StyledTableCell>
+                <StyledTableCell>DURAÇÃO</StyledTableCell>
+                <StyledTableCell></StyledTableCell>
               </TableRow>
-            );
-          })}
-          <TableRow
-            sx={{ backgroundColor: "green", height: "10px" }}
-            id="sentinela"
-          ></TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+            </TableHead>
+            <TableBody>
+              {musicas.map((musica) => {
+                let audio = new Audio(`${musica.audio}`);
+
+                const start = () => {
+                  audio.play();
+                };
+
+                const pause = () => {
+                  audio.pause();
+                };
+
+                let minutoDuracao = Math.trunc(musica.duracao / 60);
+                let segundoDuracao = musica.duracao % 60;
+
+                const icons = (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <Tooltip title="Música completa">
+                      <MusicNoteIcon sx={icon}>
+                        <a
+                          style={{
+                            textDecoration: "none",
+                            color: "white",
+                          }}
+                          href={musica.link}
+                          target="_blank"
+                        ></a>
+                      </MusicNoteIcon>
+                    </Tooltip>
+                    <Play start={start} pause={pause} icon={icon} />
+
+                    <Tooltip title="Favoritar">
+                      {musica.fav ? (
+                        <FavoriteIcon
+                          style={{ ...icon, color: pink[600] }}
+                          onClick={() => {
+                            removeFromFav(musica.id);
+                          }}
+                        />
+                      ) : (
+                        <FavoriteBorderIcon
+                          style={{ ...icon, color: pink[600] }}
+                          onClick={() => {
+                            addFav(musica);
+                          }}
+                        />
+                      )}
+                    </Tooltip>
+                  </div>
+                );
+                return (
+                  <TableRow
+                    key={musica.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <StyledTableCell>
+                      <Tooltip title={musica.titulo}>
+                        <Avatar src={musica.foto} variant="rounded" />
+                      </Tooltip>
+                    </StyledTableCell>
+                    <StyledTableCell sx={td}>
+                      <p style={tp}>{musica.titulo}</p>
+                    </StyledTableCell>
+                    <StyledTableCell>{musica.autor}</StyledTableCell>
+                    <StyledTableCell sx={td}>
+                      <p style={tp}>{musica.album}</p>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {minutoDuracao}:
+                      {segundoDuracao < 10
+                        ? "0" + segundoDuracao
+                        : segundoDuracao}
+                    </StyledTableCell>
+                    <StyledTableCell>{icons}</StyledTableCell>
+                  </TableRow>
+                );
+              })}
+              <TableRow
+                sx={{ backgroundColor: "green", height: "10px" }}
+                id="sentinela"
+              ></TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Empty>Nenhum resultado para ${search}!</Empty>
+      )}
+    </>
   );
 }
 

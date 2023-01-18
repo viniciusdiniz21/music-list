@@ -4,7 +4,9 @@ import InputBase from "@mui/material/InputBase";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
 import { SearchContext } from "../../../contexts/SearchContext";
+import { MusicsContext } from "../../../contexts/MusicsContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -38,9 +40,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const icon = { cursor: "pointer", ml: 1, mr: 2 };
+
 function index() {
   const { search, setSearch, isSearched, setIsSearched } =
     React.useContext(SearchContext);
+  const { music, setMusic, currentItem, setCurrentItem } =
+    React.useContext(MusicsContext);
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -48,12 +54,35 @@ function index() {
         <StyledInputBase
           placeholder="Pesquisar..."
           inputProps={{ "aria-label": "search" }}
+          value={search}
           onChange={(ev) => setSearch(ev.target.value)}
         />
       </Search>
-      <Tooltip title="Fazer pesquisa">
-        <SearchIcon sx={{ cursor: "pointer", ml: 1, mr: 2 }} />
-      </Tooltip>
+      {isSearched ? (
+        <Tooltip title="Cancelar pesquisa">
+          <ClearIcon
+            sx={icon}
+            onClick={() => {
+              setCurrentItem(0);
+              setIsSearched(false);
+              setSearch("");
+              setMusic([]);
+            }}
+          />
+        </Tooltip>
+      ) : (
+        <Tooltip title="Fazer pesquisa">
+          <SearchIcon
+            sx={icon}
+            onClick={() => {
+              if (search.length > 0) {
+                setCurrentItem(0);
+                setIsSearched(true);
+              }
+            }}
+          />
+        </Tooltip>
+      )}
     </Box>
   );
 }

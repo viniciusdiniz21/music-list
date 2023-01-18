@@ -7,58 +7,67 @@ import { MusicsContext } from "../../contexts/MusicsContext";
 import { SearchContext } from "../../contexts/SearchContext";
 
 function index() {
-  const [currentItem, setCurrentItem] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
 
-  const { music, setMusic } = React.useContext(MusicsContext);
-  const { search, setSearch } = React.useContext(SearchContext);
+  const { music, setMusic, currentItem, setCurrentItem } =
+    React.useContext(MusicsContext);
+  const { search, setSearch, isSearched, setIsSearched } =
+    React.useContext(SearchContext);
 
   const limit = 10;
 
   useEffect(() => {
-    getMusics();
-  }, [currentItem]);
+    setLoading(true);
+    setCurrentItem(0);
+    setMusic([]);
+  }, [isSearched]);
+
+  useEffect(() => {
+    isSearched ? getSearchMusics() : getMusics();
+  }, [currentItem, isSearched]);
 
   //USE EFFECT PARA RESETAR CURRENT ITEM E MUSIC QUANDO ALTERAR PARA SEARCHED
 
-  async function handleSearchMusics() {
-    setCurrentItem(0);
-    setMusic([]);
-    try {
-      const response = await api.get(
-        `search/${search}?index=${currentItem}&limit=${limit}`
-      );
-      setMusic(response.data.tracks.data);
-    } catch (error) {}
-  }
-
   async function getMusics() {
+    setIsSearched(false);
     try {
       const response = await api.get(
         `playlist/1001939451?index=${currentItem}&limit=${limit}`
       );
       let newMusics = response.data.tracks.data;
       setMusic((prevMusics) => [...prevMusics, ...newMusics]);
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   }
   async function getSearchMusics() {
     try {
       const response = await api.get(
-        `search/${search}?index=${currentItem}&limit=${limit}`
+        `search?q=${search}&index=${currentItem}&limit=${limit}`
       );
-      let newMusics = response.data.tracks.data;
+      let newMusics = response.data.data;
       setMusic((prevMusics) => [...prevMusics, ...newMusics]);
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   }
 
   return (
     <DrawerAppBar>
       {/*Resolver problema da primeira busca duplicada*/}
-      <Lista
-        list={music}
-        currentItem={currentItem}
-        setCurrentItem={setCurrentItem}
-        limit={limit}
-      />
+      {loading ? (
+        <h4 style={{ color: "white", fontWheight: 500 }}>Carregando . . .</h4>
+      ) : (
+        <Lista
+          list={music}
+          currentItem={currentItem}
+          setCurrentItem={setCurrentItem}
+          limit={limit}
+          search={search}
+        />
+      )}
     </DrawerAppBar>
   );
 }
