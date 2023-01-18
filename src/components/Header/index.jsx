@@ -50,7 +50,12 @@ function DrawerAppBar({ window, children }) {
       </Typography>
       <Divider />
       <List>
-        <ListItem disablePadding>
+        <ListItem
+          disablePadding
+          onClick={() => {
+            navigate("/");
+          }}
+        >
           {location.pathname != "/favoritos" && <SearchBar />}
         </ListItem>
         <ListItem disablePadding>

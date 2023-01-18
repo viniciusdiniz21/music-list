@@ -120,16 +120,16 @@ function index({ list, currentItem, setCurrentItem, limit, search }) {
                     }}
                   >
                     <Tooltip title="Música completa">
-                      <MusicNoteIcon sx={icon}>
-                        <a
-                          style={{
-                            textDecoration: "none",
-                            color: "white",
-                          }}
-                          href={musica.link}
-                          target="_blank"
-                        ></a>
-                      </MusicNoteIcon>
+                      <a
+                        style={{
+                          textDecoration: "none",
+                          color: "white",
+                        }}
+                        href={musica.link}
+                        target="_blank"
+                      >
+                        <MusicNoteIcon sx={icon} />
+                      </a>
                     </Tooltip>
 
                     <Play icon={icon} id={musica.id} audioUrl={musica.audio} />
