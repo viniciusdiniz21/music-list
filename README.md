@@ -1,6 +1,6 @@
 # music-list
 ## Após clonar o projeto utilize os seguintes comnados no terminal
 <br/>
-### npm install
+npm install
 <br/>
-### npm run dev
+npm run dev
