@@ -1,5 +1,5 @@
 # music-list
-## Após clonar o projeto utilize os seguintes comnados no terminal
+## Após clonar o projeto utilize os seguintes comandos no terminal
 <br/>
 npm install
 <br/>
